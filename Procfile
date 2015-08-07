@@ -1,0 +1,1 @@
+worker:  bundle exec rake haze:fetch_image

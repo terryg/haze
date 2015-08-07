@@ -1,3 +1,4 @@
-require 'rubygems'
-require 'sinatra'
-require 'rake'
+gem 'rubygems'
+gem 'sinatra'
+gem 'rake'
+gem 'foreman'
