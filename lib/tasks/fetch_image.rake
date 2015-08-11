@@ -7,7 +7,7 @@ namespace :haze do
     Net::HTTP.start(url.host, url.port) do |http|
       resp, data = http.get(url.path, nil)
       stamp = Time.now.to_i
-      open( File.join(File.dirname(__FILE__), "../../tmp/#{stamp}.jpg"), "wb") { |file| file.write(resp.body) }
+      open( File.join(File.dirname(__FILE__), "../../public/images/#{stamp}.jpg"), "wb") { |file| file.write(resp.body) }
     end
   end
 end

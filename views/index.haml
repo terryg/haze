@@ -1,4 +1,45 @@
-%div{:class=>'header'}
-%div{:class=>'container'}
-%div{:class=>'footer'}
+%html
+  %head
+    %title
+      Terry G's Slideshow of Hazecam.net Boston Images
+    %script
+      var interval = 1500;
+      var image_dir = "images/";
 
+      var image_num = 0;
+      image_array = new Array();
+      - @files.each do |file|
+        = "image_array[image_num++] = new imageItem(image_dir + \"#{file}\");"
+      var total_images = image_array.length;
+
+      function imageItem(image_location) {
+      this.image_item = new Image();
+      this.image_item.src = image_location;
+      }  
+
+      function get_image_item_location(imageObj) {
+      return(imageObj.image_item.src);
+      }
+
+      function get_next_image() {
+      image_num = (image_num+1)%total_images;
+      var new_image = get_image_item_location(image_array[image_num]);
+      return (new_image);
+      } 
+
+      function switch_image(img_name) {
+      var new_image = get_next_image();
+      document[img_name].src = new_image;
+      var recur_call = "switch_image('"+img_name+"')";
+      timerID = setTimeout(recur_call, interval);
+      }
+
+  %body{:onLoad=>"switch_image('slides')"}
+    .header
+      A little website to show what's happening over time at <a href="http://www.hazecam.net/camsite.aspx?site=boston">Camnet Boston, Massachusetts</a>
+    .container
+
+
+      %img{:name => "slides", :src => "images/#{@files[0]}"}
+    .footer
+      Find me at <a href="https://github.com/terryg/haze">github.com/terryg/haze</a>
