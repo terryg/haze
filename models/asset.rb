@@ -20,4 +20,11 @@ class Asset
     return fkey
   end
 
+  def destroy
+    s3 = AWS::S3.new
+    obj = s3.buckets[ENV['S3_BUCKET_NAME']].objects[self.s3_fkey]
+    obj.delete
+    super
+  end
+
 end

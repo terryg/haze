@@ -21,5 +21,10 @@ namespace :haze do
         end
       end
     end
+
+    assets = Asset.all(:created_at.lt => (Time.now - 3*60*60))
+    assets.each do |a|
+      a.destroy
+    end
   end
 end
