@@ -8,8 +8,8 @@
 
       var image_num = 0;
       image_array = new Array();
-      - @files.each do |file|
-        = "image_array[image_num++] = new imageItem(image_dir + \"#{file}\");"
+      - @urls.each do |url|
+        = "image_array[image_num++] = new imageItem(\"#{url}\");"
       var total_images = image_array.length;
 
       function imageItem(image_location) {
@@ -38,8 +38,6 @@
     .header
       A little website to show what's happening over time at <a href="http://www.hazecam.net/camsite.aspx?site=boston">Camnet Boston, Massachusetts</a>
     .container
-
-
-      %img{:name => "slides", :src => "images/#{@files[0]}"}
+      %img{:name => "slides", :src => "#{@urls[0]}"}
     .footer
       Find me at <a href="https://github.com/terryg/haze">github.com/terryg/haze</a>
