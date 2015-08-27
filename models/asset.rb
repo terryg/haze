@@ -21,9 +21,7 @@ class Asset
   end
 
   def destroy
-    s3 = AWS::S3.new
-    obj = s3.buckets[ENV['S3_BUCKET_NAME']].objects[self.s3_fkey]
-    obj.delete
+    AWS::S3::S3Object.delete(self.s3_fkey, ENV['S3_BUCKET_NAME'])
     super
   end
 
