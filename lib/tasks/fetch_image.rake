@@ -1,24 +1,25 @@
 require 'net/http'
+require './models/asset'
 namespace :haze do
   
   desc "Fetches the current image from hazecam.net"
   task :fetch_image do
-    public = File.join(File.dirname(__FILE__), "../../public")
-    images = File.join(File.dirname(__FILE__), "../../public/images")
-
-    if !Dir.exist?(public)
-      Dir.mkdir(public)
-    end
-   
-    if !Dir.exist?(images)
-      Dir.mkdir(images)
-    end
-
     url = URI.parse("http://www.hazecam.net/images/main/boston_right.jpg")
     Net::HTTP.start(url.host, url.port) do |http|
       resp, data = http.get(url.path, nil)
       stamp = Time.now.to_i
-      open( File.join(File.dirname(__FILE__), "../../public/images/#{stamp}.jpg"), "wb") { |file| file.write(resp.body) }
+
+      target = File.join(File.dirname(__FILE__), "../../tmp/#{stamp}.jpg")
+
+      open(target, "wb") { |file| file.write(resp.body)}
+
+      fkey = Asset.store_on_s3(open(target, "rb"), "#{stamp}.jpg")
+      asset = Asset.new({:s3_fkey => fkey, :created_at => Time.now})
+      if !asset.save
+        asset.errors.each do |err|
+          puts "ERR: #{err}"
+        end
+      end
     end
   end
 end
