@@ -1,2 +1,6 @@
 tmp/*.jpg
 public/images/*.jpg
+vendor
+.env
+.bundle
+*~
