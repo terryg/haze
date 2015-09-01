@@ -24,10 +24,12 @@ namespace :haze do
       end
     end
 
-    assets = Asset.all(:created_at.lt => (Time.now - 3*60*60))
+    assets = Asset.all(:fields => [:id, :s3_fkey], :created_at.lt => (Time.now - 3*60*60))
     assets.each do |a|
       puts "INFO: doomed asset #{a.id}"
-      if a.destroy
+      a.delete_s3
+      a.deleted = true
+      if a.save
         puts "INFO: succeeded."
       else
         puts "ERR: failed."

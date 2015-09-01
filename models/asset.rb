@@ -4,6 +4,7 @@ class Asset
   property :id, Serial
   property :s3_fkey, String
   property :created_at, DateTime
+  property :deleted, Boolean, :default => false
 
   validates_presence_of :s3_fkey, :created_at
 
@@ -20,14 +21,9 @@ class Asset
     return fkey
   end
 
-  def destroy
-    puts "INFO: Asset {self.id} exists with S3 #{self.s3_fkey}? #{AWS::S3::S3Object.exists?(self.s3_fkey, ENV['S3_BUCKET_NAME'])}"
+  def delete_s3
+    puts "INFO: Asset #{self.id} exists with S3 #{self.s3_fkey}? #{AWS::S3::S3Object.exists?(self.s3_fkey, ENV['S3_BUCKET_NAME'])}"
     AWS::S3::S3Object.delete(self.s3_fkey, ENV['S3_BUCKET_NAME'])
-
-    adapter = DataMapper.repository(:default).adapter
-
-    adapter.execute("DEL assets:#{self.id}")
-
     puts "INFO: done."
   end
 
