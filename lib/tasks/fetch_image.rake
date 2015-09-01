@@ -19,11 +19,14 @@ namespace :haze do
         asset.errors.each do |err|
           puts "ERR: #{err}"
         end
+      else
+        puts "INFO: saved asset #{asset.id}"
       end
     end
 
     assets = Asset.all(:created_at.lt => (Time.now - 3*60*60))
     assets.each do |a|
+      puts "INFO: doomed asset #{asset.id}"
       a.destroy
     end
   end
