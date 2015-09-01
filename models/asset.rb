@@ -20,9 +20,15 @@ class Asset
     return fkey
   end
 
-  before :destroy do |asset| 
-    puts "INFO: Asset {asset.id} exists with S3 #{asset.s3_fkey}? #{AWS::S3::S3Object.exists?(asset.s3_fkey, ENV['S3_BUCKET_NAME'])}"
-    AWS::S3::S3Object.delete(asset.s3_fkey, ENV['S3_BUCKET_NAME'])
+  def destroy
+    puts "INFO: Asset {self.id} exists with S3 #{self.s3_fkey}? #{AWS::S3::S3Object.exists?(self.s3_fkey, ENV['S3_BUCKET_NAME'])}"
+    AWS::S3::S3Object.delete(self.s3_fkey, ENV['S3_BUCKET_NAME'])
+
+    adapter = DataMapper.repository(:default).adapter
+
+    adapter.execute("DEL assets:#{self.id}")
+
+    puts "INFO: done."
   end
 
 end
