@@ -26,7 +26,7 @@ namespace :haze do
 
     assets = Asset.all(:created_at.lt => (Time.now - 3*60*60))
     assets.each do |a|
-      puts "INFO: doomed asset #{asset.id}"
+      puts "INFO: doomed asset #{a.id}"
       a.destroy
     end
   end
