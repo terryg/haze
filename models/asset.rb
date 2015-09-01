@@ -20,7 +20,7 @@ class Asset
     return fkey
   end
 
-  before :delete do 
+  before :destroy do 
     puts "INFO: Asset {self.id} exists with S3 #{self.s3_fkey}? #{AWS::S3::S3Object.exists?(self.s3_fkey, ENV['S3_BUCKET_NAME'])}"
     AWS::S3::S3Object.delete(self.s3_fkey, ENV['S3_BUCKET_NAME'])
   end
