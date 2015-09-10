@@ -1,4 +1,5 @@
 require 'net/http'
+require 'redis'
 require './models/asset'
 namespace :haze do
   
@@ -24,16 +25,16 @@ namespace :haze do
       end
     end
 
-    assets = Asset.all(:fields => [:id, :s3_fkey], :created_at.lt => (Time.now - 3*60*60))
+    redis = Redis.new
+
+    assets = Asset.all(:created_at.lt => (Time.now), :fields => [:id, :s3_fkey, :created_at, :deleted])
     assets.each do |a|
       puts "INFO: doomed asset #{a.id}"
       a.delete_s3
-      a.deleted = true
-      if a.save
-        puts "INFO: succeeded."
-      else
-        puts "ERR: failed."
-      end
+      r = redis.del("assets:#{a.id}")
+      puts "INFO: r -> #{r}"
+      puts "INFO: done."
     end
+
   end
 end

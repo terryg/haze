@@ -1,7 +1,7 @@
 class Asset
   include DataMapper::Resource
 
-  property :id, Serial
+  property :id, Serial, :index => true
   property :s3_fkey, String
   property :created_at, DateTime
   property :deleted, Boolean, :default => false
@@ -24,7 +24,7 @@ class Asset
   def delete_s3
     puts "INFO: Asset #{self.id} exists with S3 #{self.s3_fkey}? #{AWS::S3::S3Object.exists?(self.s3_fkey, ENV['S3_BUCKET_NAME'])}"
     AWS::S3::S3Object.delete(self.s3_fkey, ENV['S3_BUCKET_NAME'])
-    puts "INFO: done."
+    puts "INFO: delete_s3 done."
   end
 
 end
