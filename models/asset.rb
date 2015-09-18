@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 class Asset
   include DataMapper::Resource
 
@@ -5,8 +7,18 @@ class Asset
   property :s3_fkey, String
   property :created_at, DateTime
   property :deleted, Boolean, :default => false
-
+  property :md5sum, String
   validates_presence_of :s3_fkey, :created_at
+
+  after :create do
+    fname = 'tmp/' + self.s3_fkey
+    self.md5sum = Asset.calc_md5sum(fname)
+    save_self(false)
+  end
+
+  def self.calc_md5sum(fname)
+    Digest::MD5.hexdigest(File.read(fname))
+  end
 
   def self.store_on_s3(temp_file, filename)
     value = (0...16).map{(97+rand(26)).chr}.join

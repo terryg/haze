@@ -14,27 +14,34 @@ namespace :haze do
 
       open(target, "wb") { |file| file.write(resp.body)}
 
-      fkey = Asset.store_on_s3(open(target, "rb"), "#{stamp}.jpg")
-      asset = Asset.new({:s3_fkey => fkey, :created_at => Time.now})
-      if !asset.save
-        asset.errors.each do |err|
-          puts "ERR: #{err}"
+      md5sum = Asset.calc_md5sum(target)
+      
+      if Asset.last.md5sum != md5sum
+        fkey = Asset.store_on_s3(open(target, "rb"), "#{stamp}.jpg")
+        asset = Asset.new({:s3_fkey => fkey, :created_at => Time.now})
+        if !asset.save
+          asset.errors.each do |err|
+            puts "ERR: #{err}"
+          end
+        else
+          puts "INFO: saved asset #{asset.id}"
         end
       else
-        puts "INFO: saved asset #{asset.id}"
+        puts "INFO: md5sum of last Asset is the same (#{md5sum})"
       end
+      
+      redis = Redis.new
+      
+      assets = Asset.all(:created_at.lt => (Time.now - 3*60*60), :fields => [:id, :s3_fkey, :created_at, :deleted])
+      assets.each do |a|
+        puts "INFO: doomed asset #{a.id}"
+        a.delete_s3
+        r = redis.del("assets:#{a.id}")
+        puts "INFO: r -> #{r}"
+        puts "INFO: done."
+      end
+      
     end
-
-    redis = Redis.new
-
-    assets = Asset.all(:created_at.lt => (Time.now - 3*60*60), :fields => [:id, :s3_fkey, :created_at, :deleted])
-    assets.each do |a|
-      puts "INFO: doomed asset #{a.id}"
-      a.delete_s3
-      r = redis.del("assets:#{a.id}")
-      puts "INFO: r -> #{r}"
-      puts "INFO: done."
-    end
-
   end
+
 end
