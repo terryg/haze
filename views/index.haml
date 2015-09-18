@@ -2,6 +2,13 @@
   %head
     %title
       Terry G's Slideshow of Hazecam.net Boston Images
+    :css
+      .wrapper { 
+        text-align: center;
+        font-family: sans-serif;
+        font-size: large;
+      }
+ 
     %script
       var interval = 500;
       var image_dir = "images/";
@@ -35,9 +42,10 @@
       }
 
   %body{:onLoad=>"switch_image('slides')"}
-    .header
-      A little website to show what's happening over time at <a href="http://www.hazecam.net/camsite.aspx?site=boston">Camnet Boston, Massachusetts</a>
-    .container
-      %img{:name => "slides", :src => "#{@urls[0]}"}
-    .footer
-      Find me at <a href="https://github.com/terryg/haze">github.com/terryg/haze</a>
+    .wrapper
+      .header
+        Source of images: <a href="http://www.hazecam.net/camsite.aspx?site=boston">Camnet Boston, Massachusetts</a>
+      .container
+        %img{:name => "slides", :src => "#{@urls[0]}"}
+      .footer
+        Find me at <a href="https://github.com/terryg/haze">github.com/terryg/haze</a>
