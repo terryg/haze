@@ -16,6 +16,14 @@ class Asset
     save_self(false)
   end
 
+  def self.s3_bucket
+    ENV['S3_BUCKET_NAME']
+  end
+
+  def url
+    self.class.s3_bucket + self.s3_fkey
+  end
+
   def self.calc_md5sum(fname)
     Digest::MD5.hexdigest(File.read(fname))
   end
@@ -29,13 +37,13 @@ class Asset
       f.write(temp_file.read)
     end
 
-    AWS::S3::S3Object.store(fkey, open(fname), ENV['S3_BUCKET_NAME'])
+    AWS::S3::S3Object.store(fkey, open(fname), self.s3_bucket)
     return fkey
   end
 
   def delete_s3
-    puts "INFO: Asset #{self.id} exists with S3 #{self.s3_fkey}? #{AWS::S3::S3Object.exists?(self.s3_fkey, ENV['S3_BUCKET_NAME'])}"
-    AWS::S3::S3Object.delete(self.s3_fkey, ENV['S3_BUCKET_NAME'])
+    puts "INFO: Asset #{self.id} exists with S3 #{self.s3_fkey}? #{AWS::S3::S3Object.exists?(self.s3_fkey, self.class.s3_bucket)}"
+    AWS::S3::S3Object.delete(self.s3_fkey, self.class.s3_bucket)
     puts "INFO: delete_s3 done."
   end
 
