@@ -20,10 +20,6 @@ class Asset
     ENV['S3_BUCKET_NAME']
   end
 
-  def url
-    self.class.s3_bucket + self.s3_fkey
-  end
-
   def self.calc_md5sum(fname)
     Digest::MD5.hexdigest(File.read(fname))
   end
@@ -39,6 +35,10 @@ class Asset
 
     AWS::S3::S3Object.store(fkey, open(fname), self.s3_bucket)
     return fkey
+  end
+
+  def url
+    "https://s3.amazonaws.com/#{self.class.s3_bucket}/#{self.s3_fkey}"
   end
 
   def delete_s3
