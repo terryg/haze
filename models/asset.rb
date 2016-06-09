@@ -16,12 +16,12 @@ class Asset
     save_self(false)
   end
 
-  def self.s3_bucket
-    ENV['S3_BUCKET_NAME']
-  end
-
   def self.calc_md5sum(fname)
     Digest::MD5.hexdigest(File.read(fname))
+  end
+
+  def self.s3_bucket
+    ENV['S3_BUCKET_NAME']
   end
 
   def self.store_on_s3(temp_file, filename)
@@ -37,14 +37,15 @@ class Asset
     return fkey
   end
 
-  def url
-    "https://s3.amazonaws.com/#{self.class.s3_bucket}/#{self.s3_fkey}"
-  end
-
   def delete_s3
     puts "INFO: Asset #{self.id} exists with S3 #{self.s3_fkey}? #{AWS::S3::S3Object.exists?(self.s3_fkey, self.class.s3_bucket)}"
     AWS::S3::S3Object.delete(self.s3_fkey, self.class.s3_bucket)
     puts "INFO: delete_s3 done."
   end
+
+  def url
+    "https://s3.amazonaws.com/#{self.class.s3_bucket}/#{self.s3_fkey}"
+  end
+
 
 end
