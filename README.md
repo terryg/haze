@@ -1,3 +1,5 @@
 # haze
 
-Slideshow generated from http://www.hazecam.net/
+Slideshow of images from http://www.hazecam.net/
+
+Deployed to http://camnet-boston.herokuapp.com/
