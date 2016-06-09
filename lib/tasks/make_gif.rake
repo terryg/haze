@@ -26,9 +26,9 @@ namespace :haze do
       end
     end
     
-    puts "INFO: #{filenames.to_s}"
+    puts "INFO: #{filenames}"
 
-    new_image = Magick::ImageList.new(filenames)
+    new_image = Magick::ImageList.new(*filenames)
     
     index = 0
     while index < assets.length
