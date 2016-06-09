@@ -8,6 +8,7 @@ class Asset
   property :created_at, DateTime
   property :deleted, Boolean, :default => false
   property :md5sum, String
+  property :type, String
   validates_presence_of :s3_fkey, :created_at
 
   after :create do

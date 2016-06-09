@@ -38,10 +38,21 @@ namespace :haze do
  
     stamp = Time.now.to_i
 
-    %x{convert -limit memory 256MiB -delay 15 -loop 30 tmp/haze_*.png tmp/#{stamp}.gif}
+    %x{convert -limit memory 256MiB -delay 60 -loop 0 tmp/haze_*.png tmp/#{stamp}.gif}
 
     fkey = Asset.store_on_s3(open("tmp/#{stamp}.gif", "rb"), "#{stamp}.gif")
     puts "INFO: #{fkey}"
+    asset = Asset.new({:s3_fkey => fkey,
+                        :type => "GIF",
+                        :created_at => Time.now})
+        if !asset.save
+          asset.errors.each do |err|
+            puts "ERR: #{err}"
+          end
+        else
+          puts "INFO: saved asset #{asset.id}"
+        end
+
 
     Dir["tmp/*.png"].each do |f|
       File.delete f

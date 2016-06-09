@@ -32,7 +32,9 @@ namespace :haze do
       
       redis = Redis.new
       
-      assets = Asset.all(:created_at.lt => (Time.now - 3*60*60), :fields => [:id, :s3_fkey, :created_at, :deleted])
+      assets = Asset.all(:created_at.lt => (Time.now - 3*60*60), 
+                         :type => "JPEG",
+                         :fields => [:id, :s3_fkey, :created_at, :deleted])
       assets.each do |a|
         puts "INFO: doomed asset #{a.id}"
         a.delete_s3

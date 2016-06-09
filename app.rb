@@ -1,8 +1,9 @@
 class App < Sinatra::Base
 
   get '/' do
-    assets = Asset.all(:s3_fkey.not => nil, :order => [:created_at.asc])
-    @urls = assets.map{|x| "#{x.url}"}
+    @asset = Asset.first(:s3_fkey.not => nil,
+                         :type => "GIF", 
+                         :order => [:created_at.asc])
     haml :index
   end
 

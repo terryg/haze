@@ -13,43 +13,11 @@
         font-size: large;
       }
  
-    %script
-      var interval = 500;
-      var image_dir = "images/";
-
-      var image_num = 0;
-      image_array = new Array();
-      - @urls.each do |url|
-        = "image_array[image_num++] = new imageItem(\"#{url}\");"
-      var total_images = image_array.length;
-
-      function imageItem(image_location) {
-      this.image_item = new Image();
-      this.image_item.src = image_location;
-      }  
-
-      function get_image_item_location(imageObj) {
-      return(imageObj.image_item.src);
-      }
-
-      function get_next_image() {
-      image_num = (image_num+1)%total_images;
-      var new_image = get_image_item_location(image_array[image_num]);
-      return (new_image);
-      } 
-
-      function switch_image(img_name) {
-      var new_image = get_next_image();
-      document[img_name].src = new_image;
-      var recur_call = "switch_image('"+img_name+"')";
-      timerID = setTimeout(recur_call, interval);
-      }
-
-  %body{:onLoad=>"switch_image('slides')"}
+  %body
     .wrapper
       .header
         Source of images: <a href="http://www.hazecam.net/camsite.aspx?site=boston">Camnet Boston, Massachusetts</a>
       .container
-        %img{:name => "slides", :src => "#{@urls[0]}"}
+        %img{:src => "#{@asset.url}"}
       .footer
         <a href="https://github.com/terryg/haze">github.com/terryg/haze</a>
