@@ -92,6 +92,7 @@ PLATFORMS
 DEPENDENCIES
   aws-s3
   data_mapper
+  dm-migrations
   dm-redis-adapter
   foreman
   haml

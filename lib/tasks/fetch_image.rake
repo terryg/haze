@@ -18,7 +18,7 @@ namespace :haze do
       
       if Asset.last.nil? or Asset.last.md5sum != md5sum
         fkey = Asset.store_on_s3(open(target, "rb"), "#{stamp}.jpg")
-        asset = Asset.new({:s3_fkey => fkey, :created_at => Time.now})
+        asset = Asset.new({:s3_fkey => fkey, :type => "JPEG", :created_at => Time.now})
         if !asset.save
           asset.errors.each do |err|
             puts "ERR: #{err}"

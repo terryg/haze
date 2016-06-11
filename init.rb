@@ -3,6 +3,7 @@ require 'rubygems'
 require 'sinatra'
 require 'haml'
 require 'dm-core'
+require 'dm-migrations'
 require 'dm-validations'
 require 'dm-redis-adapter'
 require 'aws/s3'
@@ -13,6 +14,7 @@ DataMapper.setup(:default, {:adapter => "redis"})
 require './models/asset'
 
 DataMapper.finalize
+DataMapper.auto_upgrade!
 
 AWS::S3::Base.establish_connection!(
   :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
