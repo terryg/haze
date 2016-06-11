@@ -12,7 +12,7 @@ namespace :haze do
     filenames = []
 
     assets.each do |a|
-      puts "INFO: #{a.url}"
+      puts "INFO: #{a.id} -- #{a.url}"
       if a.url
         uri = URI.parse(a.url)
         Net::HTTP.start(uri.host) do |http|
