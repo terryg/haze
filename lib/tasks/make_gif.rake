@@ -7,12 +7,12 @@ namespace :haze do
   
   desc "Makes an animated GIF from the individual images."
   task :make_gif do
-    assets = Asset.all(:type => "JPEG", :limit => 10)
-
+    assets = Asset.all(:type => "JPEG", :order => [:created_at.desc], :limit => 10)
+    
     filenames = []
 
     assets.each do |a|
-      puts "INFO: #{a.id} -- #{a.url}"
+      puts "INFO: #{a.id} -- #{a.created_at} -- #{a.url}"
       if a.url
         uri = URI.parse(a.url)
         Net::HTTP.start(uri.host) do |http|
