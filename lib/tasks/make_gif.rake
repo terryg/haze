@@ -29,9 +29,12 @@ namespace :haze do
     puts "INFO: #{filenames}"
 
     new_image = Magick::ImageList.new(*filenames)
+
+    puts "INFO: new_image length - #{new_image.length}"
     
     index = 0
     while index < assets.length
+      puts "INFO: #{index} #{index.to_s.rjust(4, "0")} #{index % new_image.length}"
       new_image[index % new_image.length].write("tmp/haze_#{index.to_s.rjust(4, "0")}.png")
       index = index + 1
     end
