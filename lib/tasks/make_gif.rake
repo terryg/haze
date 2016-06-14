@@ -7,8 +7,7 @@ namespace :haze do
   
   desc "Makes an animated GIF from the individual images."
   task :make_gif do
-    assets = Asset.all(:type => "JPEG", :order => [:created_at.desc], :limit => 10)
-    assets.reverse!
+    assets = Asset.all(:type => "JPEG", :order => [:created_at.asc], :limit => 10)
 
     filenames = []
 
