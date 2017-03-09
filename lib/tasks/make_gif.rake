@@ -1,8 +1,8 @@
-require 'net/http'
-require 'uri'
+require 'open-uri'
 require 'rmagick'
 require 'redis'
 require './models/asset'
+
 namespace :haze do
   
   desc "Makes an animated GIF from the individual images."
@@ -12,25 +12,16 @@ namespace :haze do
 
     filenames = []
 
+    new_image = Magick::ImageList.new
+    
     assets.each do |a|
       puts "INFO: #{a.id} -- #{a.created_at} -- #{a.url}"
       if a.url
-        uri = URI.parse(a.url)
-        Net::HTTP.start(uri.host) do |http|
-          resp = http.get(uri.path)
-          tempfile = Tempfile.new(a.s3_fkey)
-          File.open(tempfile.path, "wb") do |f|
-            f.write resp.body
-          end
-          filenames << tempfile.path
-        end
+        urlimage = open(URI.parse(a.url))
+        new_image.from_blob(urlimage.read)
       end
     end
     
-    puts "INFO: #{filenames}"
-
-    new_image = Magick::ImageList.new(*filenames)
-
     puts "INFO: new_image length - #{new_image.length}"
     
     index = 0

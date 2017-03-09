@@ -1,10 +1,9 @@
 class App < Sinatra::Base
 
   get '/' do
-    redis = Redis.new
-    id = redis.get("assets:id:serial")
-    puts "latest is #{id}"
-    @asset = Asset.get(id.to_i)
+    @asset = Asset.first(:s3_fkey.not => nil,
+                         :type => "GIF", 
+                         :order => [:created_at.desc])
     haml :index
   end
 
