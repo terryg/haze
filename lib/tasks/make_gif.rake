@@ -38,8 +38,8 @@ namespace :haze do
     fkey = Asset.store_on_s3(open("tmp/#{stamp}.gif", "rb"), "#{stamp}.gif")
     puts "INFO: #{fkey}"
     asset = Asset.new({:s3_fkey => fkey,
-                        :type => "GIF",
-                        :created_at => Time.now})
+                       :type => "GIF",
+                       :created_at => Time.now})
     if !asset.save
       asset.errors.each do |err|
         puts "ERR: #{err}"
@@ -47,19 +47,18 @@ namespace :haze do
     else
       puts "INFO: saved asset #{asset.id}"
     end
-    
-    Dir["tmp/*.png"].each do |f|
-      File.delete f
-    end
 
-    Dir["tmp/*.jpg"].each do |f|
-      File.delete f
+    redis = Redis.new
+      
+    Asset.all(:type => "GIF").each do |a|
+      if a.id != asset.id
+        puts "INFO: doomed asset #{a.id}"
+        a.delete_s3
+        r = redis.del("assets:#{a.id}")
+        puts "INFO: r -> #{r}"
+        puts "INFO: done."
+      end
     end
-
-    Dir["tmp/*.gif"].each do |f|
-      File.delete f
-    end
-
   end
 
 end
