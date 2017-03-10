@@ -21,6 +21,21 @@ class Asset
     Digest::MD5.hexdigest(File.read(fname))
   end
 
+  def self.fetch(url)
+    begin
+      url = URI.parse(url)
+      fname = Net::HTTP.start(url.host, url.port) do |http|
+        resp, data = http.get(url.path, nil)
+        target = File.join(File.dirname(__FILE__), "../tmp/#{Time.now.to_i}.jpg")   
+        open(target, "wb") { |file| file.write(resp.body) }
+        target
+      end
+    rescue => e
+      puts "ERROR #{e}"
+    end
+    return fname
+  end
+
   def self.s3_bucket
     ENV['S3_BUCKET_NAME']
   end
