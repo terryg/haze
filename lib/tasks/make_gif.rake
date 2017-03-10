@@ -33,7 +33,7 @@ namespace :haze do
  
     stamp = Time.now.to_i
 
-    %x{convert -limit memory 256MiB -delay 50 -loop 0 tmp/haze_*.png tmp/#{stamp}.gif}
+    %x{convert -limit memory 256MiB -delay 20 -loop 0 tmp/haze_*.png tmp/#{stamp}.gif}
 
     fkey = Asset.store_on_s3(open("tmp/#{stamp}.gif", "rb"), "#{stamp}.gif")
     puts "INFO: #{fkey}"
