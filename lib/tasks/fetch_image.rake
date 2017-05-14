@@ -5,14 +5,14 @@ namespace :haze do
   
   desc "Fetches the current image from hazecam.net"
   task :fetch_image do
-    jpg0 = Asset.fetch("http://www.hazecam.net/images/main/boston_left.jpg")
+#    jpg0 = Asset.fetch("http://www.hazecam.net/images/main/boston_left.jpg")
     jpg1 = Asset.fetch("http://www.hazecam.net/images/main/boston_right.jpg")
     
     stamp = Time.now.to_i
 
-    puts "XXXXX convert +append #{jpg0} #{jpg1} tmp/haze#{stamp}.jpg"
+    puts "XXXXX convert +append #{jpg1} tmp/haze#{stamp}.jpg"
     
-    %x{convert +append #{jpg0} #{jpg1} tmp/haze#{stamp}.jpg}
+    %x{convert +append #{jpg1} tmp/haze#{stamp}.jpg}
 
     md5sum = Asset.calc_md5sum("tmp/haze#{stamp}.jpg")
       
